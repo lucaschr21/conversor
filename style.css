@@ -5,19 +5,135 @@
 }
 
 html {
-    font-family: 'Inter', sans-serif;
+    font-size: 62.5%;
 }
 
 body {
-    background-color: #e0e5ec; 
+    font-family: 'Inter', sans-serif;
+    background-color: #e0e5ec;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: #333;
+    color: #5f677A;
+    font-size: 1.6rem;
 }
 
-h1 {
+.converter-wrapper {
+    width: 100%;
+    max-width: 400px;
+    padding: 3rem;
+    border-radius: 20px;
+    background: #e0e5ec;
+    box-shadow: 9px 9px 16px #a3b1c6,
+                -9px -9px 16px #ffffff;
+}
+
+.input-group {
+    margin-bottom: 2.5rem;
+}
+
+.currency-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.currency-from, .currency-to {
+    flex: 1;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+input[type="number"],
+select {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    outline: none;
+    font-size: 1.8rem;
+    color: #5f677A;
+    border-radius: 10px;
+    background: #e0e5ec;
+    box-shadow: inset 5px 5px 10px #a3b1c6,
+                inset -5px -5px 10px #ffffff;
     text-align: center;
-    margin-bottom: 2rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.swap-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: #e0e5ec;
+    color: #5f677A;
+    font-size: 2rem;
+    cursor: pointer;
+    margin: 0 1.5rem;
+    margin-top: 2.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 5px 5px 10px #a3b1c6,
+                -5px -5px 10px #ffffff;
+    transition: all 0.1s ease-in-out;
+}
+
+.swap-button:hover {
+    color: #3d4452;
+}
+
+.swap-button:active {
+    box-shadow: inset 3px 3px 7px #a3b1c6,
+                inset -3px -3px 7px #ffffff;
+    font-size: 1.9rem;
+}
+
+.result-wrapper {
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.result-amount {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #3d4452;
+    margin-bottom: 0.5rem;
+}
+
+.result-rate {
+    font-size: 1.4rem;
+    color: #5f677A;
+}
+
+.error {
+    color: #c44;
+    font-weight: 500;
+}
+
+@media (max-width: 400px) {
+    html {
+        font-size: 58%;
+    }
+    .converter-wrapper {
+        padding: 2rem;
+    }
 }
