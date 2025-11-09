@@ -1,4 +1,10 @@
-<p-card header="Taxas Populares">
+<p-card>
+  <ng-template pTemplate="header">
+    <div class="p-4">
+      <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Taxas Populares</h2>
+    </div>
+  </ng-template>
+
   <div class="space-y-3">
     @for (pair of popularPairs(); track pair.target) {
 
