@@ -1,0 +1,18 @@
+<p-card header="Moeda Base">
+  <div class="grid grid-cols-2 gap-2">
+    @for (currency of currencies(); track currency.code) {
+
+    <p-button
+      (onClick)="selectCurrency(currency.code)"
+      [outlined]="selectedCurrency() !== currency.code"
+      [label]="currency.code"
+      styleClass="flex justify-start text-left w-full"
+    >
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">{{ currency.flag }}</span>
+        <span class="font-semibold">{{ currency.code }}</span>
+      </div>
+    </p-button>
+    }
+  </div>
+</p-card>
