@@ -1,17 +1,9 @@
 <div
-  class="min-h-screen bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-100 transition-colors"
+  class="min-h-screen bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 transition-colors"
 >
   <div class="container mx-auto px-4 py-8 max-w-7xl">
     <header class="mb-8 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="bg-primary p-3 rounded-xl">
-          <i class="pi pi-chart-line text-primary-contrast" style="font-size: 2rem"></i>
-        </div>
-        <div>
-          <h1 class="text-xl font-semibold">Conversor de Moedas</h1>
-          <p class="text-sm text-surface-600 dark:text-surface-400">Acompanhe e converta moedas</p>
-        </div>
-      </div>
+      <h1 class="app-title text-xl sm:text-2xl lg:text-3xl font-normal tracking-wide">CONVERSOR</h1>
 
       <p-button
         [icon]="theme() === 'light' ? 'pi pi-moon' : 'pi pi-sun'"
@@ -22,7 +14,6 @@
         aria-label="Alternar tema"
       />
     </header>
-
     <main>
       <router-outlet />
     </main>
