@@ -19,21 +19,17 @@ function generateMockData(period: Period) {
 
   const data = [];
   const count = labels[period].length;
+  let baseValue = 5.0;
+
   for (let i = 0; i < count; i++) {
-    data.push(5 + Math.random() * 0.5 - (i < count / 2 ? Math.random() : -Math.random()));
+    const trend = (Math.random() - 0.48) * 0.1;
+    baseValue += trend;
+    data.push(Math.max(0, baseValue + (Math.random() - 0.5) * 0.2));
   }
 
   return {
     labels: labels[period] || labels['1A'],
-    datasets: [
-      {
-        label: 'Cotação',
-        data: data,
-        fill: false,
-        borderColor: '#42A5F5',
-        tension: 0.4,
-      },
-    ],
+    data: data,
   };
 }
 
@@ -57,38 +53,55 @@ export class CurrencyChart {
 
   public selectedPeriod = signal<Period>('1A');
 
-  public chartData = computed(() => {
-    return generateMockData(this.selectedPeriod());
+  public chartInfo = computed(() => {
+    const mock = generateMockData(this.selectedPeriod());
+
+    const startValue = mock.data[0] || 0;
+    const endValue = mock.data[mock.data.length - 1] || 0;
+    const percentChange = startValue > 0 ? ((endValue - startValue) / startValue) * 100 : 0;
+    const isPositive = percentChange >= 0;
+
+    const lineColor = isPositive ? '#10b981' : '#ef4444';
+
+    const chartData = {
+      labels: mock.labels,
+      datasets: [
+        {
+          label: 'Cotação',
+          data: mock.data,
+          fill: false,
+          borderColor: lineColor,
+          tension: 0.4,
+        },
+      ],
+    };
+
+    return {
+      chartData,
+      endValue,
+      percentChange,
+      isPositive,
+    };
   });
 
   public chartOptions = signal({
+    animation: {
+      duration: 0,
+    },
     maintainAspectRatio: false,
     aspectRatio: 0.6,
     plugins: {
-      legend: {
-        display: false,
-      },
+      legend: { display: false },
     },
     scales: {
       x: {
-        ticks: {
-          color: '#64748b',
-        },
-        grid: {
-          color: 'rgba(100, 116, 139, 0.1)',
-        },
+        ticks: { color: '#64748b' },
+        grid: { color: 'rgba(100, 116, 139, 0.1)' },
       },
       y: {
-        ticks: {
-          color: '#64748b',
-        },
-        grid: {
-          color: 'rgba(100, 116, 139, 0.1)',
-        },
+        ticks: { color: '#64748b' },
+        grid: { color: 'rgba(100, 116, 139, 0.1)' },
       },
     },
   });
-
-  public endValue = computed(() => this.chartData().datasets[0].data.slice(-1)[0]);
-  public percentChange = computed(() => (Math.random() - 0.2) * 10);
 }
