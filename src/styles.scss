@@ -1,2 +1,7 @@
 @use 'tailwind.css';
-@import 'primeicons/primeicons.css';
+@use 'primeicons/primeicons.css';
+@forward '../node_modules/flag-icons/sass/variables' with (
+  $flag-icons-use-square: false
+);
+@use '../node_modules/flag-icons/sass/flag-icons-base';
+@use '../node_modules/flag-icons/sass/flag-icons-list';

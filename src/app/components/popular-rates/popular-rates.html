@@ -13,9 +13,9 @@
     >
       <div class="flex items-center gap-3">
         <div class="flex items-center gap-1">
-          <span class="text-xl">{{ pair.baseFlag }}</span>
+          <span [class]="'fi fi-' + pair.base.substring(0, 2).toLowerCase()"></span>
           <span class="text-surface-400 dark:text-surface-600">/</span>
-          <span class="text-xl">{{ pair.targetFlag }}</span>
+          <span [class]="'fi fi-' + pair.target.substring(0, 2).toLowerCase()"></span>
         </div>
         <div>
           <div class="font-semibold">{{ pair.base }}/{{ pair.target }}</div>

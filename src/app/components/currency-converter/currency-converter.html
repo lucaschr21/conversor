@@ -31,7 +31,7 @@
           class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700"
         >
           @if (baseCurrencyData(); as base) {
-          <span class="text-xl">{{ base.flag }}</span>
+          <span [class]="'fi fi-' + base.code.substring(0, 2).toLowerCase()"></span>
           <span>{{ base.code }}</span>
           }
         </div>
@@ -66,13 +66,13 @@
         >
           <ng-template let-currency pTemplate="item">
             <div class="flex items-center gap-2">
-              <span class="text-xl">{{ currency.flag }}</span>
+              <span [class]="'fi fi-' + currency.code.substring(0, 2).toLowerCase()"></span>
               <span>{{ currency.code }}</span>
             </div>
           </ng-template>
           <ng-template let-currency pTemplate="selectedItem">
             <div class="flex items-center gap-2">
-              <span class="text-xl">{{ currency.flag }}</span>
+              <span [class]="'fi fi-' + currency.code.substring(0, 2).toLowerCase()"></span>
               <span>{{ currency.code }}</span>
             </div>
           </ng-template>
