@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+  signal,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -8,17 +16,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 
-const ALL_CURRENCIES = [
-  { code: 'USD', name: 'Dólar Americano', flag: '🇺🇸', symbol: '$' },
-  { code: 'EUR', name: 'Euro', flag: '🇪🇺', symbol: '€' },
-  { code: 'BRL', name: 'Real Brasileiro', flag: '🇧🇷', symbol: 'R$' },
-  { code: 'GBP', name: 'Libra Esterlina', flag: '🇬🇧', symbol: '£' },
-  { code: 'JPY', name: 'Iene Japonês', flag: '🇯🇵', symbol: '¥' },
-  { code: 'AUD', name: 'Dólar Australiano', flag: '🇦🇺', symbol: '$' },
-  { code: 'CAD', name: 'Dólar Canadense', flag: '🇨🇦', symbol: '$' },
-  { code: 'CHF', name: 'Franco Suíço', flag: '🇨🇭', symbol: 'Fr' },
-  { code: 'GHF', name: 'Franco Suíaaço', flag: '🇨🇭', symbol: 'aFr' },
-];
+import { CurrencyApi } from '../../services/currency-api';
 
 @Component({
   selector: 'app-currency-selector',
@@ -40,9 +38,11 @@ export class CurrencySelector {
   public selectedCurrency = input.required<string>();
   public currencyChange = output<string>();
 
+  private currencyApi = inject(CurrencyApi);
+
   public searchTerm = signal('');
 
-  private allCurrencies = signal(ALL_CURRENCIES);
+  private allCurrencies = signal(this.currencyApi.getUniqueCurrencies());
 
   public currencies = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -53,12 +53,14 @@ export class CurrencySelector {
 
     return this.allCurrencies().filter(
       (currency) =>
-        currency.name.toLowerCase().includes(term) ||
-        currency.code.toLowerCase().includes(term) ||
-        currency.symbol.toLowerCase().includes(term)
+        currency.name.toLowerCase().includes(term) || currency.code.toLowerCase().includes(term)
     );
   });
 
+  /**
+   * Emite o evento de mudança de moeda.
+   * @param currencyCode O código da moeda (ex: 'USD')
+   */
   public selectCurrency(currencyCode: string): void {
     this.currencyChange.emit(currencyCode);
   }

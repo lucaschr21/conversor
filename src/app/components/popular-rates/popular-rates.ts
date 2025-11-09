@@ -1,40 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CardModule } from 'primeng/card';
 
-const MOCK_RATES: { [key: string]: number } = {
-  USD: 1.0,
-  EUR: 0.93,
-  BRL: 5.45,
-  GBP: 0.81,
-  JPY: 151.2,
-};
-
-const POPULAR_PAIRS: { [key: string]: string[] } = {
-  USD: ['EUR', 'BRL', 'GBP', 'JPY'],
-  EUR: ['USD', 'BRL', 'GBP', 'JPY'],
-  BRL: ['USD', 'EUR', 'GBP', 'JPY'],
-  GBP: ['USD', 'EUR', 'BRL', 'JPY'],
-  JPY: ['USD', 'EUR', 'BRL', 'GBP'],
-  DEFAULT: ['EUR', 'BRL', 'GBP', 'JPY'],
-};
-
-const FLAGS: { [key: string]: string } = {
-  USD: '🇺🇸',
-  EUR: '🇪🇺',
-  BRL: '🇧🇷',
-  GBP: '🇬🇧',
-  JPY: '🇯🇵',
-};
+import { CurrencyApi } from '../../services/currency-api';
 
 interface PopularPair {
   base: string;
   target: string;
-  baseFlag: string;
-  targetFlag: string;
   rate: number;
-  change: number; // Mock
+  change: number;
 }
 
 @Component({
@@ -43,25 +18,28 @@ interface PopularPair {
   imports: [CardModule, CommonModule],
   templateUrl: './popular-rates.html',
   styleUrl: './popular-rates.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PopularRates {
   public baseCurrency = input.required<string>();
 
-  public flags = FLAGS;
+  private currencyApi = inject(CurrencyApi);
 
   public popularPairs = computed<PopularPair[]>(() => {
     const base = this.baseCurrency();
-    const targets = POPULAR_PAIRS[base] || POPULAR_PAIRS['DEFAULT'];
+
+    const allRates = this.currencyApi.getRates();
+    const allPairs = this.currencyApi.getPopularPairs();
+
+    const targets = allPairs[base] || allPairs['DEFAULT'];
 
     return targets.map((target) => {
-      const baseRate = MOCK_RATES[base] || 1;
-      const targetRate = MOCK_RATES[target] || 1;
+      const baseRate = allRates[base] || 1;
+      const targetRate = allRates[target] || 1;
 
       return {
         base: base,
         target: target,
-        baseFlag: FLAGS[base] || '🏳️',
-        targetFlag: FLAGS[target] || '🏳️',
         rate: targetRate / baseRate,
         change: (Math.random() - 0.5) * 2,
       };
