@@ -1,6 +1,6 @@
 <p-card header="Moeda Base">
   <div class="grid grid-cols-2 gap-2">
-    @for (currency of currencies(); track currency.code) {
+    @for (currency of currencies; track currency.code) {
 
     <p-button
       (onClick)="selectCurrency(currency.code)"

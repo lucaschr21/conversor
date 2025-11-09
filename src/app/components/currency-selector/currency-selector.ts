@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, createNgModule, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  createNgModule,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CardModule } from 'primeng/card';
@@ -24,17 +31,17 @@ const MOCK_CURRENCIES = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencySelector {
-  public currencies = signal(MOCK_CURRENCIES);
+  public selectedCurrency = input.required<string>();
 
-  public selectedCurrency = signal('USD');
+  public currencyChange = output<string>();
+
+  public currencies = MOCK_CURRENCIES;
 
   /**
-   * Atualiza o signal da moeda selecionada.
+   * Emite o evento de mudança de moeda.
    * @param currencyCode O código da moeda (ex: 'USD')
    */
   public selectCurrency(currencyCode: string): void {
-    this.selectedCurrency.set(currencyCode);
-
-    // TODO: output() para avisar o componente pai sobre a mudança.
+    this.currencyChange.emit(currencyCode);
   }
 }
