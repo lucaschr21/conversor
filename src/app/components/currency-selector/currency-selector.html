@@ -17,15 +17,15 @@
   </ng-template>
 
   <div class="h-[230px] overflow-y-auto pr-2">
-    <div class="grid grid-cols-2 gap-2">
+    <div class="grid grid-cols-4 gap-2">
       @for (currency of currencies(); track currency.code) {
 
       <p-button
         (onClick)="selectCurrency(currency.code)"
         [outlined]="selectedCurrency() !== currency.code"
-        styleClass="flex justify-start text-left w-full"
+        styleClass="flex justify-center text-left w-full p-2"
       >
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1">
           <span [class]="'fi fi-' + currency.code.substring(0, 2).toLowerCase()"></span>
           <span class="font-semibold">{{ currency.code }}</span>
         </div>
