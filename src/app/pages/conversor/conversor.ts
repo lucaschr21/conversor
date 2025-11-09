@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CurrencySelector } from '../../components/currency-selector/currency-selector';
 import { PopularRates } from '../../components/popular-rates/popular-rates';
 import { CurrencyConverter } from '../../components/currency-converter/currency-converter';
+import { CurrencyChart } from '../../components/currency-chart/currency-chart';
 
 @Component({
   selector: 'app-conversor',
-  imports: [CurrencySelector, PopularRates, CurrencyConverter],
+  imports: [CurrencySelector, PopularRates, CurrencyConverter, CurrencyChart],
   templateUrl: './conversor.html',
   styleUrl: './conversor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

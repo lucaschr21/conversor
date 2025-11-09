@@ -1,0 +1,46 @@
+<p-card>
+  <ng-template pTemplate="header">
+    <div class="p-6 pb-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100 mb-2">
+          Variação Histórica ({{ baseCurrency() }})
+        </h2>
+        <div class="flex items-center gap-2">
+          <span class="text-2xl font-bold text-surface-900 dark:text-surface-100">
+            {{ endValue() | number : '1.4-4' }}
+          </span>
+          <span
+            class="flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold"
+            [class]="
+              percentChange() >= 0
+                ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300'
+                : 'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300'
+            "
+          >
+            @if (percentChange() >= 0) {
+            <i class="pi pi-arrow-up"></i>
+            } @else {
+            <i class="pi pi-arrow-down"></i>
+            }
+            <span>{{ percentChange() | number : '1.2-2' }}%</span>
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <p-selectButton
+          [options]="periodOptions()"
+          [(ngModel)]="selectedPeriod"
+          (ngModelChange)="selectedPeriod.set($event)"
+          optionLabel="label"
+          optionValue="value"
+          aria-label="Selecionar período do gráfico"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="h-72">
+    <p-chart type="line" [data]="chartData()" [options]="chartOptions()" height="100%" />
+  </div>
+</p-card>
