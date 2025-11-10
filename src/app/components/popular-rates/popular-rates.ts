@@ -1,16 +1,24 @@
 import { ChangeDetectionStrategy, Component, computed, input, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-
 import { CardModule } from 'primeng/card';
+import { CurrencyApi, Cotacoes } from '../../services/currency-api';
 
-import { CurrencyApi } from '../../services/currency-api';
-
-interface PopularPair {
+interface PopularPairRate {
   base: string;
   target: string;
   rate: number;
   change: number;
 }
+
+const POPULAR_TARGETS: { [key: string]: string[] } = {
+  USD: ['EUR', 'BRL', 'GBP', 'JPY'],
+  EUR: ['USD', 'BRL', 'GBP', 'JPY'],
+  BRL: ['USD', 'EUR', 'GBP', 'ARS'],
+  GBP: ['USD', 'EUR', 'BRL', 'JPY'],
+  JPY: ['USD', 'EUR', 'BRL', 'GBP'],
+  DEFAULT: ['EUR', 'BRL', 'GBP', 'JPY'],
+};
 
 @Component({
   selector: 'app-popular-rates',
@@ -22,27 +30,57 @@ interface PopularPair {
 })
 export class PopularRates {
   public baseCurrency = input.required<string>();
-
   private currencyApi = inject(CurrencyApi);
 
-  public popularPairs = computed<PopularPair[]>(() => {
+  public rates = toSignal(this.currencyApi.getRates(), {
+    initialValue: {} as Cotacoes,
+  });
+
+  public popularPairs = computed<PopularPairRate[]>(() => {
     const base = this.baseCurrency();
+    const allRates = { ...this.rates() };
 
-    const allRates = this.currencyApi.getRates();
-    const allPairs = this.currencyApi.getPopularPairs();
+    if (Object.keys(allRates).length === 0) {
+      return [];
+    }
 
-    const targets = allPairs[base] || allPairs['DEFAULT'];
+    if (base === 'BRL' && !allRates['BRL']) {
+      allRates['BRL'] = { bid: '1.0', pctChange: '0' } as any;
+    }
 
-    return targets.map((target) => {
-      const baseRate = allRates[base] || 1;
-      const targetRate = allRates[target] || 1;
+    const targets = POPULAR_TARGETS[base] || POPULAR_TARGETS['DEFAULT'];
+    const pairs: PopularPairRate[] = [];
 
-      return {
+    const baseRateData = allRates[base];
+    if (!baseRateData) return [];
+
+    const baseRateToBRL = parseFloat(baseRateData.bid);
+
+    for (const target of targets) {
+      if (target === 'BRL') {
+        if (base === 'BRL') continue;
+        pairs.push({
+          base: base,
+          target: 'BRL',
+          rate: baseRateToBRL,
+          change: parseFloat(baseRateData.pctChange),
+        });
+        continue;
+      }
+
+      const targetRateData = allRates[target];
+      if (!targetRateData) continue;
+
+      const targetRateToBRL = parseFloat(targetRateData.bid);
+      if (targetRateToBRL === 0) continue;
+
+      pairs.push({
         base: base,
         target: target,
-        rate: targetRate / baseRate,
-        change: (Math.random() - 0.5) * 2,
-      };
-    });
+        rate: baseRateToBRL / targetRateToBRL,
+        change: parseFloat(targetRateData.pctChange),
+      });
+    }
+    return pairs;
   });
 }

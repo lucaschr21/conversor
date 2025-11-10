@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +17,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 
-import { CurrencyApi } from '../../services/currency-api';
+import { CurrencyApi, Cotacoes } from '../../services/currency-api'; // 2. IMPORTE A INTERFACE
+
+interface MoedaUnica {
+  code: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-currency-selector',
@@ -39,10 +45,27 @@ export class CurrencySelector {
   public currencyChange = output<string>();
 
   private currencyApi = inject(CurrencyApi);
-
   public searchTerm = signal('');
 
-  private allCurrencies = signal(this.currencyApi.getUniqueCurrencies());
+  private allRates = toSignal(this.currencyApi.getRates(), {
+    initialValue: {} as Cotacoes,
+  });
+
+  private allCurrencies = computed<MoedaUnica[]>(() => {
+    const rates = this.allRates();
+    const codes = Object.keys(rates);
+
+    const currencyList = codes.map((code) => {
+      const name = rates[code].name.split('/')[0];
+      return { code: code, name: name };
+    });
+
+    if (!rates['BRL']) {
+      currencyList.push({ code: 'BRL', name: 'Real Brasileiro' });
+    }
+
+    return currencyList.sort((a, b) => a.code.localeCompare(b.code));
+  });
 
   public currencies = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -50,17 +73,12 @@ export class CurrencySelector {
     if (!term) {
       return this.allCurrencies();
     }
-
     return this.allCurrencies().filter(
       (currency) =>
         currency.name.toLowerCase().includes(term) || currency.code.toLowerCase().includes(term)
     );
   });
 
-  /**
-   * Emite o evento de mudança de moeda.
-   * @param currencyCode O código da moeda (ex: 'USD')
-   */
   public selectCurrency(currencyCode: string): void {
     this.currencyChange.emit(currencyCode);
   }

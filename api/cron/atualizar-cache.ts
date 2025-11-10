@@ -29,8 +29,15 @@ module.exports = async (request: VercelRequest, response: VercelResponse) => {
     }));
     await redis.set('lista-moedas-pares', JSON.stringify(moedasParesArray));
 
-    const cotacoesResponse = await fetch('https://economia.awesomeapi.com.br/json/last/ALL');
+    const cotacoesResponse = await fetch('https://economia.awesomeapi.com.br/json/all');
+
+    if (!cotacoesResponse.ok) {
+      await redis.set('cotacoes-atuais', JSON.stringify({}));
+      throw new Error(`Falha ao buscar cotações: ${cotacoesResponse.statusText}`);
+    }
+
     const cotacoesJson = await cotacoesResponse.json();
+
     await redis.set('cotacoes-atuais', JSON.stringify(cotacoesJson));
 
     return response.status(200).json({ message: 'Cache (listas e cotações) atualizado!' });
@@ -39,8 +46,13 @@ module.exports = async (request: VercelRequest, response: VercelResponse) => {
     if (error instanceof Error) {
       errorMessage = error.message;
     }
+    if (redis.isOpen) {
+      await redis.disconnect();
+    }
     return response.status(500).json({ error: errorMessage });
   } finally {
-    await redis.disconnect();
+    if (redis.isOpen) {
+      await redis.disconnect();
+    }
   }
 };
