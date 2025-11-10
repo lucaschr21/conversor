@@ -7,7 +7,7 @@ import { CardModule } from 'primeng/card';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { Select } from 'primeng/select';
 
-import { CurrencyApi, Cotacoes } from '../../services/currency-api'; // 2. IMPORTE AS INTERFACES
+import { CurrencyApi, Cotacoes } from '../../services/currency-api';
 
 interface MoedaUnica {
   code: string;

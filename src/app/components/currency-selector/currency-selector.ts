@@ -17,7 +17,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 
-import { CurrencyApi, Cotacoes } from '../../services/currency-api'; // 2. IMPORTE A INTERFACE
+import { CurrencyApi, Cotacoes } from '../../services/currency-api';
 
 interface MoedaUnica {
   code: string;
